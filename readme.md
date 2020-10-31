@@ -3,8 +3,9 @@
 Analyse source import dependencies into a graph and detect import cycles.
 Parsing is done using [deno_swc](https://github.com/nestdotland/deno_swc) and [swc](https://github.com/swc-project/swc).
 
-```bash
-deno run --allow-read --allow-net cycle.ts https://deno.land/x/oak/mod.ts
+```
+export CYCLE=https://raw.githubusercontent.com/sanderhahn/deno_cycle/main/cycle.ts
+deno run --allow-read --allow-net $CYCLE https://deno.land/x/oak/mod.ts
 
 Analysis of https://deno.land/x/oak/mod.ts
 https://deno.land/x/oak/application.ts -> https://deno.land/x/oak/middleware.ts
