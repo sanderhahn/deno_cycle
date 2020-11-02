@@ -104,29 +104,33 @@ type GraphEntry = {
   url: string;
   deps: string[];
   path?: string[];
-  cycle?: string[];
 };
 
 type Graph = { [url: string]: GraphEntry };
 
+type Cycle = string[];
+
 async function recurseGraph(
   filename: string,
   base: URL,
-  agg: Graph,
+  visited: Graph,
   path: string[],
+  cycles: Cycle[],
 ) {
   const url = new URL(filename, base);
   const key = url.toString();
 
-  if (agg[key] !== undefined) {
-    const index = path.indexOf(key);
-    if (index >= 0) {
-      agg[key].cycle = path.slice(index);
-    }
-    return agg;
+  const index = path.indexOf(key);
+  if (index >= 0) {
+    cycles.push(path.slice(index));
+    return visited;
+  }
+
+  path.push(key);
+  if (visited[key] !== undefined) {
+    return visited;
   }
   console.error(key);
-  path.push(key);
 
   const source = await readFileOrURL(url);
   const sourceDeps = deps(source);
@@ -137,12 +141,12 @@ async function recurseGraph(
     deps: sourceDeps,
     path,
   };
-  agg[entry.url] = entry;
+  visited[entry.url] = entry;
 
   for (const dep of entry.deps) {
-    await recurseGraph(dep, url, agg, [...path]);
+    await recurseGraph(dep, url, visited, [...path], cycles);
   }
-  return agg;
+  return visited;
 }
 
 /**
@@ -155,9 +159,10 @@ export async function graph(filename: string, base?: URL) {
   if (base === undefined) {
     base = new URL(`file://${Deno.cwd()}/`);
   }
-  const graph = await recurseGraph(filename, base, {}, []);
-  for (const [_url, entry] of Object.entries(graph)) {
-    delete (entry.path);
-  }
-  return graph;
+  const cycles: Cycle[] = [];
+  const graph = await recurseGraph(filename, base, {}, [], cycles);
+  return {
+    graph,
+    cycles,
+  };
 }

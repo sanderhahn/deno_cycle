@@ -6,16 +6,12 @@ if (start === undefined) {
   Deno.exit(1);
 }
 
-const deps = await graph(start);
+const {cycles} = await graph(start);
 console.log(`Analysis of ${start}`);
-let hasCycle = false;
-for (const entry of Object.values(deps)) {
-  if (entry.cycle) {
-    console.log(entry.cycle.join(" -> "));
-    hasCycle = true;
-  }
+for (const cycle of cycles) {
+  console.log(cycle.join(" -> "));
 }
-if (hasCycle) {
+if (cycles.length > 0) {
   Deno.exit(1);
 }
 console.log("No import cycles");
