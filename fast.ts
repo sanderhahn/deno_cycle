@@ -19,7 +19,7 @@ const graph = JSON.parse(decoder.decode(stdout));
 
 type GraphFiles = {
   [url: string]: {
-    deps: string[];
+    deps?: string[];
   }
 };
 type Graph = {
@@ -46,6 +46,9 @@ function cycles(
   }
   path.push(visit);
   visited[visit] = true;
+  if (graph[visit] === undefined) {
+    return agg;
+  }
   const deps = graph[visit].deps;
   if (deps !== undefined) {
     for (const dep of deps) {
