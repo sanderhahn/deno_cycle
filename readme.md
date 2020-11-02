@@ -17,7 +17,6 @@ https://deno.land/x/oak@v6.3.1/application.ts -> https://deno.land/x/oak@v6.3.1/
 https://deno.land/x/oak@v6.3.1/context.ts -> https://deno.land/x/oak@v6.3.1/send.ts
 https://deno.land/x/oak@v6.3.1/application.ts -> https://deno.land/x/oak@v6.3.1/context.ts
 https://deno.land/x/oak@v6.3.1/application.ts -> https://deno.land/x/oak@v6.3.1/middleware.ts
-https://deno.land/x/oak@v6.3.1/mod.ts
 ```
 
 ## Slow version

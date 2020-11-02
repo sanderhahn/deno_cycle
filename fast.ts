@@ -37,7 +37,7 @@ function cycles(
   agg: Cycle[],
 ) {
   const index = path.indexOf(visit);
-  if (index >= 0) {
+  if (index >= 0 && path.length - index > 1) {
     agg.push(path.slice(index));
     return agg;
   }
